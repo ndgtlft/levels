@@ -22,21 +22,24 @@ contract ShuffleOnDegen is ERC721Enumerable, Ownable, ReentrancyGuard {
 
   constructor() ERC721("shuffle on DEGEN", "SHUFFLE") Ownable(msg.sender) {
     _currentTokenId = 1;
-    _price = 1000000000000000000; //1DEGEN
+    _price = 0; //1DEGEN
   }
 
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
     _requireOwned(tokenId);
 
-    string memory svg1 = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><path fill="#282C34" d="M0 0h800v800H0z"/><text x="50%" y="12%" fill="#fff" font-size="40" font-weight="300" text-anchor="middle" dominant-baseline="central">shuffle</text><text x="50%" y="20%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">on DEGEN</text><text x="50%" y="50%" fill="#8B5CF5" font-size="120" font-weight="700" text-anchor="middle" dominant-baseline="central">';
+    string memory svg1 = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><path fill="#282C34" d="M0 0h800v800H0z"/><text x="50%" y="12%" fill="#fff" font-size="40" font-weight="300" text-anchor="middle" dominant-baseline="central">shuffle</text><text x="50%" y="20%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">on DEGEN</text><text x="50%" y="50%" fill="#38BDF8" font-size="120" font-weight="700" text-anchor="middle" dominant-baseline="central">';
     string memory resultText = getRandomPermutation();
-    string memory svg2 = '</text><text x="50%" y="80%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">';
+    if (keccak256(abi.encodePacked(resultText)) == keccak256(abi.encodePacked("DEGEN"))){
+      svg1 = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><path fill="#282C34" d="M0 0h800v800H0z"/><text x="50%" y="12%" fill="#fff" font-size="40" font-weight="300" text-anchor="middle" dominant-baseline="central">shuffle</text><text x="50%" y="20%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">on DEGEN</text><text x="50%" y="50%" fill="#8B5CF5" font-size="120" font-weight="700" text-anchor="middle" dominant-baseline="central">';
+    }
+    string memory svg2 = '</text><text x="50%" y="80%" fill="#A3E635" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">';
     string memory dateText = getDateString(_tokenId2Date[tokenId]);
     string memory svg3 = '</text><text x="50%" y="85%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">minted #';
     string memory idText = Strings.toString(tokenId);
     string memory svg4 = '</text></svg>';
     string memory image = string(abi.encodePacked(svg1,resultText,svg2,dateText,svg3,idText,svg4));
-    string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "shuffle #', tokenId, '", "description": "The letters are shuffled and inscribed on-chain on DEGENchain.","attributes": [{"trait_type":"date","value":"' , dateText , '"}],"image": "data:image/svg+xml;base64,', Base64.encode(bytes(image)), '"}'))));
+    string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "shuffle on ' , resultText , ' #', idText, '", "description": "The letters are shuffled and inscribed on-chain on DEGENchain.","attributes": [{"trait_type":"date","value":"' , dateText , '"},{"trait_type":"result","value":"' , resultText , '"}],"image": "data:image/svg+xml;base64,', Base64.encode(bytes(image)), '"}'))));
 
     return string(abi.encodePacked('data:application/json;base64,', json));
   }
@@ -86,7 +89,7 @@ contract ShuffleOnDegen is ERC721Enumerable, Ownable, ReentrancyGuard {
 
   //shuffle
   function getRandomPermutation() private view returns (string memory) {
-    uint256 randomSeed = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender)));
+    uint256 randomSeed = uint256(keccak256(abi.encodePacked(block.timestamp, blockhash(block.number - 1), msg.sender)));
     return shuffle(shuffleString, randomSeed);
   }
 
@@ -111,4 +114,3 @@ contract ShuffleOnDegen is ERC721Enumerable, Ownable, ReentrancyGuard {
   }
 
 }
-
