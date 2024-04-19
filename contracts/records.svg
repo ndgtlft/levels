@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+<path fill="#282C34" d="M0 0h800v800H0z"/>
+<text x="50%" y="12%" fill="#fff" font-size="40" font-weight="300" text-anchor="middle" dominant-baseline="central">
+shuffle
+</text>
+<text x="50%" y="20%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">
+on DEGEN
+</text>
+<text x="50%" y="50%" fill="#8B5CF5" font-size="120" font-weight="700" text-anchor="middle" dominant-baseline="central">
+DEGEN
+</text>
+<text x="50%" y="80%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">
+2024.04.19
+</text>
+<text x="50%" y="85%" fill="#fff" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="central">
+minted #1
+</text>
+</svg>
