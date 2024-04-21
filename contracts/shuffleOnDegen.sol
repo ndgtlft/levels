@@ -15,14 +15,15 @@ contract ShuffleOnDegen is ERC721Enumerable, Ownable, ReentrancyGuard {
   using Strings for uint256;
 
   string constant shuffleString = "DEGEN";
-  uint256 private _price;
+  uint256 public price;
   uint256 private _currentTokenId;
+  bool public onSale;
   mapping(uint256 => uint32) private _tokenId2Date;
   mapping(uint32 => uint256[]) private _date2TokenIds;
 
   constructor() ERC721("shuffle on DEGEN", "SHUFFLE") Ownable(msg.sender) {
     _currentTokenId = 1;
-    _price = 0; //1DEGEN
+    price = 0; //1DEGEN
   }
 
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
@@ -75,7 +76,7 @@ contract ShuffleOnDegen is ERC721Enumerable, Ownable, ReentrancyGuard {
 
   function mint(int256 timezoneOffset) external payable nonReentrant {
     require( -23 <= timezoneOffset && timezoneOffset <= 23, "Invalid timezoneOffset");
-    require( msg.value == _price, "Invalid price");
+    require( msg.value == price, "Invalid price");
     uint256 tokenId = _currentTokenId++;
     uint32 date = getDate(uint256(int256(block.timestamp) + timezoneOffset * int256(3600)));
     _tokenId2Date[tokenId] = date;
@@ -105,8 +106,12 @@ contract ShuffleOnDegen is ERC721Enumerable, Ownable, ReentrancyGuard {
   }
 
   //owner
-  function setPrice(uint256 _newPrice) external onlyOwner {
-    _price = _newPrice;
+  function setPrice(uint256 newPrice) external onlyOwner {
+    price = newPrice;
+  }
+
+  function setOnSale(bool newState) external onlyOwner {
+    onSale = newState;
   }
 
   function withdraw(address payable toAddress, uint256 amountWei) external onlyOwner {
